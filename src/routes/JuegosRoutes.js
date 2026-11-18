@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const {registrarUsuario, login, obtenerJuegos, agregarJuego, editarJuego, eliminarJuego} = require('../controllers/juegosController')
+const {registrarUsuario, login, obtenerJuegos, agregarJuego, editarJuego, eliminarJuego} = require('../controllers/JuegosController')
 
 router.post('/usuarios/registro', registrarUsuario)
 router.post('/login', login)
