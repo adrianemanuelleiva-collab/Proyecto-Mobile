@@ -1,8 +1,6 @@
-
 const supabase = require('../config/database')
 const bcrypt = require('bcryptjs')
 
-// REGISTRAR USUARIO
 exports.registrarUsuario = async (req, res) => {
     try {
         const { nombre, email, password } = req.body
@@ -21,7 +19,7 @@ exports.registrarUsuario = async (req, res) => {
 
         const contraseñaHash = await bcrypt.hash(password, 10)
 
-        const { data, error } = await supabase.from('Usuarios').insert([{Nombre: nombre,Mail: email,Contraseña: contraseñaHash}]).select('id, Nombre, Mail').single()
+        const { data, error } = await supabase.from('usuarios').insert([{Nombre: nombre,Mail: email,Contraseña: contraseñaHash}]).select('id, Nombre, Mail').single()
 
         if (error) {
             if (error.code === '23505') { return res.status(409).json({mensaje: 'El email ya está registrado'})
@@ -44,7 +42,7 @@ exports.login = async (req, res) => {
 
         if (!email || !password) {return res.status(400).json({mensaje: 'Ingresá email y contraseña'}) }
 
-        const { data: usuario, error } = await supabase.from('Usuarios').select('*').eq('Mail', email).maybeSingle()
+        const { data: usuario, error } = await supabase.from('usuarios').select('*').eq('Mail', email).maybeSingle()
 
         if (error) {
             throw error
@@ -78,7 +76,7 @@ exports.obtenerJuegos = async (req, res) => {
             return res.status(400).json({mensaje: 'Falta el ID del usuario' })
         }
 
-        const { data, error } = await supabase.from('Juegos') .select('*') .eq('id_Usuario', usuarioId)
+        const { data, error } = await supabase.from('juegos') .select('*') .eq('id_Usuario', usuarioId)
 
         if (error) {
             throw error
@@ -100,7 +98,7 @@ exports.agregarJuego = async (req, res) => {
             return res.status(400).json({mensaje: 'Todos los campos son obligatorios' })
         }
 
-        const { data, error } = await supabase.from('Juegos') .insert([{Nombre: nombre,Plataforma: plataforma, Genero: genero,Estado: estado,id_Usuario: id_usuario}]).select().single()
+        const { data, error } = await supabase.from('juegos') .insert([{Nombre: nombre,Plataforma: plataforma, Genero: genero,Estado: estado,id_Usuario: id_usuario}]).select().single()
 
         if (error) {
             throw error
@@ -123,7 +121,7 @@ exports.editarJuego = async (req, res) => {
             return res.status(400).json({mensaje: 'Todos los campos son obligatorios' })
         }
 
-        const { data, error } = await supabase .from('Juegos').update({ Nombre: nombre,Plataforma: plataforma, Genero: genero,Estado: estado }).eq('id', id) .eq('id_Usuario', id_usuario).select().maybeSingle()
+        const { data, error } = await supabase .from('juegos').update({ Nombre: nombre,Plataforma: plataforma, Genero: genero,Estado: estado }).eq('id', id) .eq('id_Usuario', id_usuario).select().maybeSingle()
 
         if (error) {
             throw error
@@ -159,7 +157,7 @@ exports.eliminarJuego = async (req, res) => {
             })
         }
 
-        const { data, error } = await supabase.from('Juegos').delete().eq('id', id).eq('id_Usuario', usuarioId).select().maybeSingle()
+        const { data, error } = await supabase.from('juegos').delete().eq('id', id).eq('id_Usuario', usuarioId).select().maybeSingle()
 
         if (error) {
             throw error
